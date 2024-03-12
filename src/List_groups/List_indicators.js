@@ -1,13 +1,16 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 
-const ListIndicators = ({ fileList }) => {
+const ListIndicators = ({ fileList, onDeleteIndicator }) => {
   return (
     <Container style={styles.container}>
       {fileList.map((fileName, index) => (
-        <span key={index} style={styles.innerContainer}>
-          {fileName}
-        </span>
+        <div key={index} style={styles.innerContainer}>
+          <span>{fileName}</span>
+          <Button variant="outline-light" style={styles.deleteButton} onClick={() => onDeleteIndicator(index)}>
+            X
+          </Button>
+        </div>
       ))}
     </Container>
   );
@@ -18,7 +21,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    overflow: 'auto', // Adicionando overflow para lidar com o conteúdo que ultrapassa o contêiner
+    overflow: 'auto',
   },
 
   innerContainer: {
@@ -26,12 +29,20 @@ const styles = {
     borderRadius: '8px',
     padding: '8px',
     marginBottom: '8px',
-    display: 'inline-block',
-    wordBreak: 'break-word', // Quebra de palavra para evitar que o texto ultrapasse a caixa
-    color:'White',
-    fontWeight:'bold'
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    wordBreak: 'break-word',
+    color: 'white',
+    fontWeight: 'bold',
+  },
 
+  deleteButton: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: 'white',
+    cursor: 'pointer',
   },
 };
 
-export default ListIndicators;
+export default ListIndicators

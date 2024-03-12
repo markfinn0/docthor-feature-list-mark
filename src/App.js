@@ -6,13 +6,14 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, Alert } from 'react-bootstrap'; // Importe o Alert do react-bootstrap
 
 const App = () => {
   const [userInputIndicador, setUserInputIndicador] = useState('');
   const [userInputDescricao, setUserInputDescricao] = useState('');
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(''); // State para armazenar mensagens de erro
 
   const handleUserInputIndicador = (event) => {
     setUserInputIndicador(event.target.value);
@@ -23,6 +24,12 @@ const App = () => {
   };
 
   const handleListIndicators = () => {
+    // Verifica se os dois campos estão preenchidos
+    if (!userInputIndicador.trim() || !userInputDescricao.trim()) {
+      setError('Por favor, preencha ambos os campos.');
+      return;
+    }
+
     // Processa o userInput e adiciona à lista
     const indicadorList = userInputIndicador.split(',').map(variable => variable.trim());
     const descricaoList = userInputDescricao.split(',').map(variable => variable.trim());
@@ -32,6 +39,17 @@ const App = () => {
     const updatedList = [...fileList, ...combinedList];
     setFileList(updatedList);
     setLoading(false);
+
+    // Limpa os formulários e erros
+    setUserInputIndicador('');
+    setUserInputDescricao('');
+    setError('');
+  };
+
+  const onDeleteIndicator = (index) => {
+    const newList = [...fileList];
+    newList.splice(index, 1); // Remove o indicador na posição 'index'
+    setFileList(newList); // Atualiza o estado da lista de indicadores
   };
 
   const handleDownloadMarkdown = () => {
@@ -77,6 +95,8 @@ const App = () => {
           </InputGroup>
         </Row>
       </Form>
+      {/* Renderiza o Alert somente se houver um erro */}
+      {error && <Alert variant="danger">{error}</Alert>}
       <Button variant="primary" onClick={handleListIndicators} className="mb-2 mx-auto" style={{ width: '30%', alignItems: "center" }}>
         Adicionar Indicador
       </Button>
@@ -84,7 +104,7 @@ const App = () => {
         Download Markdown
       </Button>
       {!loading && (
-        <ListIndicators fileList={fileList} />
+        <ListIndicators fileList={fileList} onDeleteIndicator={onDeleteIndicator} />
       )}
     </Container>
   );
